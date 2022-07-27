@@ -1,5 +1,9 @@
 # Changelog
 
+## v1.3.0
+
+What even is 1.2.0
+
 ## v1.2.0
 
 ## v1.1.0
