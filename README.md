@@ -1,3 +1,6 @@
+# DO NOT USE THIS PACKAGE UNDER ANY CIRCUMSTANCES. THIS IS A TEST PACKAGE AND WILL BE DELETED SHORTLY.
+
+
 # <img src="https://cdn.rawgit.com/theupdateframework/artwork/3a649fa6/tuf-logo.svg" height="100" valign="middle" alt="TUF"/> A Framework for Securing Software Update Systems
 
 ![Build](https://github.com/theupdateframework/python-tuf/actions/workflows/ci.yml/badge.svg)
