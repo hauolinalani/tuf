@@ -26,7 +26,7 @@ jobs:
           ref: ${{ github.event.workflow_run.head_branch }}
 
       - name: Set up Python
-        uses: actions/setup-python@0ebf233433c08fb9061af664d501c3f3ff0e9e20
+        uses: actions/setup-python@c4e89fac7e8767b327bbad6cb4d859eda999cf08
         with:
           python-version: '3.x'
 
@@ -93,7 +93,7 @@ jobs:
             .in_toto/*.link
 
       - name: Store build artifacts
-        uses: actions/upload-artifact@6673cd052c4cd6fcf4b4e6e60ea986c889389535
+        uses: actions/upload-artifact@3cea5372237819ed00197afe530f5a7ea3e805c8
         # NOTE: The GitHub release page contains the release artifacts too, but using
         # GitHub upload/download actions seems robuster: there is no need to compute
         # download URLs and tampering with artifacts between jobs is more limited.
@@ -121,7 +121,7 @@ jobs:
           repository_url: https://test.pypi.org/legacy/
 
       - name: Finalize GitHub release
-        uses: actions/github-script@9ac08808f993958e9de277fe43a64532a609130e
+        uses: actions/github-script@7a5c598405937d486b0331594b5da2b14db670da
         with:
           script: |
             await github.rest.repos.updateRelease({

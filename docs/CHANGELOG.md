@@ -1,5 +1,9 @@
 # Changelog
 
+## v1.3.0
+
+What even is 1.2.0
+
 ## v1.2.0
 
 ## v1.1.0
@@ -696,4 +700,3 @@ hyphen.)
 @trishankkkarthik trishankkarthik released this on Sep 21, 2013 · 1877 commits to develop since this release
 
 * TUF 0.7.5 (pre-release)
-

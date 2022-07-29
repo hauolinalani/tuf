@@ -114,8 +114,8 @@ class Updater:
         that happens on demand during ``get_targetinfo()``. However, if the
         repository uses `consistent_snapshot
         <https://theupdateframework.github.io/specification/latest/#consistent-snapshots>`_,
-        then all metadata downloaded downloaded by the Updater will use the same
-        consistent repository state.
+        then all metadata downloaded by the Updater will use the same consistent
+        repository state.
 
         Raises:
             OSError: New metadata could not be written to disk
@@ -183,7 +183,7 @@ class Updater:
 
         Returns:
             Local file path if the file is an up to date target file.
-            None if file is not found or it is not up to date.
+            ``None`` if file is not found or it is not up to date.
         """
 
         if filepath is None:
@@ -275,6 +275,7 @@ class Updater:
 
     def _persist_metadata(self, rolename: str, data: bytes) -> None:
         """Write metadata to disk atomically to avoid data loss."""
+        temp_file_name: Optional[str] = None
         try:
             # encode the rolename to avoid issues with e.g. path separators
             encoded_name = parse.quote(rolename, "")
@@ -282,14 +283,15 @@ class Updater:
             with tempfile.NamedTemporaryFile(
                 dir=self._dir, delete=False
             ) as temp_file:
+                temp_file_name = temp_file.name
                 temp_file.write(data)
             os.replace(temp_file.name, filename)
         except OSError as e:
             # remove tempfile if we managed to create one,
             # then let the exception happen
-            if temp_file:
+            if temp_file_name is not None:
                 try:
-                    os.remove(temp_file.name)
+                    os.remove(temp_file_name)
                 except FileNotFoundError:
                     pass
             raise e
@@ -334,7 +336,13 @@ class Updater:
         data = self._download_metadata(
             Timestamp.type, self.config.timestamp_max_length
         )
-        self._trusted_set.update_timestamp(data)
+        try:
+            self._trusted_set.update_timestamp(data)
+        except exceptions.EqualVersionNumberError:
+            # If the new timestamp version is the same as current, discard the
+            # new timestamp. This is normal and it shouldn't raise any error.
+            return
+
         self._persist_metadata(Timestamp.type, data)
 
     def _load_snapshot(self) -> None:
@@ -436,17 +444,17 @@ class Updater:
                 child_roles_to_visit = []
                 # NOTE: This may be a slow operation if there are many
                 # delegated roles.
-                for child_role in targets.delegations.roles.values():
-                    if child_role.is_delegated_path(target_filepath):
-                        logger.debug("Adding child role %s", child_role.name)
+                for (
+                    child_name,
+                    terminating,
+                ) in targets.delegations.get_roles_for_target(target_filepath):
 
-                        child_roles_to_visit.append(
-                            (child_role.name, role_name)
-                        )
-                        if child_role.terminating:
-                            logger.debug("Not backtracking to other roles")
-                            delegations_to_visit = []
-                            break
+                    logger.debug("Adding child role %s", child_name)
+                    child_roles_to_visit.append((child_name, role_name))
+                    if terminating:
+                        logger.debug("Not backtracking to other roles")
+                        delegations_to_visit = []
+                        break
                 # Push 'child_roles_to_visit' in reverse order of appearance
                 # onto 'delegations_to_visit'.  Roles are popped from the end of
                 # the list.
