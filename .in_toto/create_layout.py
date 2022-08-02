@@ -32,9 +32,10 @@ from securesystemslib.interface import import_ed25519_publickey_from_file
 MAINTAINER_KEYIDS = [
     "e9c059ec0d3264fab35f94ad465bf9f6f8eb475a",  # Justin Cappos
     "1343c98fab84859fe5ec9e370527d8a37f521a2f",  # Jussi Kukkonen
-    "f3ff39b659ed00e877084a18b4934539a71e38cd",  # Trishank Karthik Kuppusamy
+    # "f3ff39b659ed00e877084a18b4934539a71e38cd",  # Trishank Karthik Kuppusamy TODO: Can't find
     "08f3409fcf71d87e30fbd3c21671f65cb74832a4",  # Joshua Lock
     "8ba69b87d43be294f23e812089a2ad3c07d962e8",  # Lukas Puehringer
+    "503fd9a31aad250e56525ed9ab9db6d395dff187",  # Athena Hernandez
 ]
 CD_KEY_PATH = "cd_key"
 CD_KEY = import_ed25519_publickey_from_file(f"{CD_KEY_PATH}.pub")
